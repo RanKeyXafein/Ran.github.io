@@ -592,7 +592,7 @@
         </div>`;
 
       row.innerHTML = `
-        ${it.img ? `<img class="thumb" src="images/${it.img}" alt="${it.name}" loading="lazy">` : ``}
+        ${it.img ? `<img class="thumb" src="${it.img}" alt="${it.name}" loading="lazy">` : ``}
         <div class="item-body">
           <div class="name">${it.name}</div>
           ${it.hasSize ? `` : `<div class="price">${rupiah(it.price)}</div>`}
@@ -852,7 +852,7 @@
 
     searchResults.innerHTML = hits.map(({ it, catTitle }) => `
       <div class="search-item" data-id="${it.id}">
-        ${it.img ? `<img src="images/${it.img}" alt="${it.name}">` : `<div class="si-no-img"></div>`}
+        ${it.img ? `<img src="${it.img}" alt="${it.name}">` : `<div class="si-no-img"></div>`}
         <div class="si-body">
           <div class="si-name">${it.name}</div>
           <div class="si-cat">${catTitle}</div>
