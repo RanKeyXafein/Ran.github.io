@@ -325,8 +325,8 @@
         <div class="receipt-option-row" id="tasRow">
           <span class="receipt-option-label">Tas belanja <small>(+Rp3.000)</small><br><small id="tasNote" style="opacity:.65;font-size:10px"></small></span>
           <div class="toggle-wrap" id="tasToggleWrap">
-            <button class="toggle-btn" id="kantongTidak">Tidak</button>
-            <button class="toggle-btn active" id="kantongYa">Ya</button>
+            <button class="toggle-btn active" id="kantongTidak">Tidak</button>
+            <button class="toggle-btn" id="kantongYa">Ya</button>
           </div>
         </div>
         <div class="total-row">
@@ -517,7 +517,7 @@
     }
   });
 
-  let kantong = true;
+  let kantong = false;
 
   function setKantong(val){
     kantong = val;
@@ -533,7 +533,11 @@
     document.getElementById("deliveryNote").style.display = isDelivery ? "block" : "none";
     document.getElementById("kantongTidak").style.display = isDelivery ? "none" : "";
     document.getElementById("tasNote").textContent = isDelivery ? "Khusus Delivery (wajib)" : "";
-    if(isDelivery){ setKantong(true); } else { render(); }
+    if(isDelivery){
+      setKantong(true);
+    } else {
+      setKantong(false);
+    }
   }
 
   // ---- BUILD MENU DOM ----
