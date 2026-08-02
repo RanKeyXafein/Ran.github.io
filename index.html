@@ -267,6 +267,76 @@
     .layout{grid-template-columns:1fr}
     .receipt-col{position:static;order:-1}
   }
+
+  /* ── MOBILE ─────────────────────────────── */
+  @media(max-width:600px){
+
+    /* Header */
+    .pricebar .wrap{flex-direction:column;gap:8px;align-items:flex-start}
+    .obr-hint{text-align:left;font-size:10.5px}
+    .pricebar .title{font-size:20px}
+
+    /* Catnav */
+    nav.catnav .wrap{padding:8px 12px;gap:4px}
+    nav.catnav a{font-size:11px;padding:6px 10px}
+    .search-btn{width:30px;height:30px}
+
+    /* Layout */
+    .wrap{padding:0 12px}
+    main .wrap{padding-top:20px}
+    .layout{gap:20px;padding-bottom:40px}
+
+    /* Struk */
+    .receipt{padding:20px 16px 16px;border-radius:8px}
+    .receipt h3{font-size:17px}
+    .receipt-brand{margin-bottom:10px}
+    .brand-fore{font-size:18px}
+    .discount-pill-receipt{font-size:10px;padding:3px 10px}
+    .lines{max-height:220px}
+    .total-row .tv{font-size:20px}
+    .order-btn{padding:14px;font-size:14px}
+    .delivery-note{font-size:10.5px}
+
+    /* Kategori */
+    .cat-head h2{font-size:19px}
+    .category{margin-bottom:32px}
+
+    /* Item kartu */
+    .items{grid-template-columns:1fr}
+    .item{padding:10px;gap:10px}
+    .thumb{width:56px;height:56px}
+    .item .name{font-size:13.5px}
+    .item .price{font-size:12px}
+
+    /* Size stepper */
+    .size-stepper-wrap{gap:5px;margin-top:6px}
+    .size-badge{font-size:9.5px;padding:2px 7px}
+    .size-price{font-size:11px}
+    .size-stepper button{width:20px;height:20px;font-size:13px}
+    .size-stepper .qty{font-size:11px}
+
+    /* Stepper biasa */
+    .stepper button{width:26px;height:26px;font-size:15px}
+    .stepper .qty{font-size:12px}
+
+    /* Search overlay */
+    .search-overlay{padding-top:50px;align-items:flex-start}
+    .search-box{width:96vw;border-radius:10px}
+    .search-input{font-size:15px}
+    .search-item{padding:9px 14px;gap:10px}
+    .search-item img{width:38px;height:38px}
+    .search-item .si-name{font-size:13.5px}
+    .search-item .si-price{font-size:12px}
+    .obr-item{padding:10px 14px}
+    .obr-text{font-size:12px}
+    .obr-text strong{font-size:12.5px}
+    .obr-btn{font-size:11px;padding:6px 13px}
+
+    /* Form */
+    .form-row input,.form-row textarea,.form-row select{font-size:14px;padding:10px 12px}
+    .form-row label{font-size:9.5px}
+    .toggle-btn{font-size:11px;padding:5px 13px}
+  }
 </style>
 </head>
 <body>
@@ -713,55 +783,28 @@
     const delivAddr = document.getElementById("deliveryAddr").value.trim();
     const note      = document.getElementById("note").value.trim();
 
-    const now  = new Date();
-    const jam  = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
-    const tgl  = now.toLocaleDateString("id-ID",  { day:"2-digit", month:"short", year:"numeric" });
+    const now   = new Date();
+    const jam   = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
+    const tgl   = now.toLocaleDateString("id-ID",  { day:"2-digit", month:"short", year:"numeric" });
     const waktu = jam + " \u00b7 " + tgl;
+    const br    = "%0A";
+    const garis = "%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95";
 
-    const br = "%0A";
-
-    // Hitung baris item dulu untuk tahu lebar terpanjang
     let subtotal = 0;
-    const itemRows = chosen.map(c => {
+    const itemLines = chosen.map(c => {
       const sub = c.price * c.qty;
       subtotal += sub;
-      const sl    = c.size ? ` (${c.size})` : "";
-      const label = `${c.name}${sl}`;
-      const qtyStr   = `x${c.qty}`;
-      const priceStr = rupiah(sub);
-      return { label, qtyStr, priceStr };
-    });
+      const sl = c.size ? ` (${c.size})` : "";
+      return `${c.name}${sl}  x${c.qty}  ${rupiah(sub)}`;
+    }).join(br);
 
     let total = subtotal;
-    if(kantong) total += KANTONG_PRICE;
+    let tasLine = "";
+    if(kantong){
+      total += KANTONG_PRICE;
+      tasLine = br + `Tas belanja  x1  ${rupiah(KANTONG_PRICE)}`;
+    }
 
-    // Padding helper
-    const pad = (str, len) => str + " ".repeat(Math.max(0, len - str.length));
-
-    // Tentukan lebar kolom
-    const maxLabel = Math.max(
-      ...itemRows.map(r => r.label.length),
-      kantong ? "Tas belanja".length : 0,
-      "Total".length
-    );
-    const maxQty   = Math.max(...itemRows.map(r => r.qtyStr.length), 2);
-    const maxPrice = Math.max(
-      ...itemRows.map(r => r.priceStr.length),
-      kantong ? rupiah(KANTONG_PRICE).length : 0,
-      rupiah(total).length
-    );
-
-    const rowWidth = maxLabel + 3 + maxQty + 3 + maxPrice;
-    const garis    = "\u2015".repeat(rowWidth);
-
-    const formatRow = (label, qty, price) =>
-      pad(label, maxLabel) + "   " + pad(qty, maxQty) + "   " + price.padStart(maxPrice);
-
-    const itemLines = itemRows.map(r => formatRow(r.label, r.qtyStr, r.priceStr)).join(br);
-    const tasLine   = kantong ? br + formatRow("Tas belanja", "x1", rupiah(KANTONG_PRICE)) : "";
-    const totalLine = pad("Total", maxLabel + 3 + maxQty + 3) + rupiah(total).padStart(maxPrice);
-
-    // Susun pesan dalam backtick monospace
     let inner = "";
     inner += `%E2%9C%A6 JASA ORDER BLUCKEYS %E2%9C%A6` + br;
     inner += `.%E2%98%98%EF%B8%8E %DD%81%CB%96 E-Receipt .%E2%98%98%EF%B8%8E %DD%81%CB%96` + br;
@@ -781,13 +824,11 @@
     inner += tasLine;
     inner += br + br;
     inner += garis + br;
-    inner += totalLine + br;
+    inner += `Total  :  ${rupiah(total)}` + br;
     inner += garis + br;
     if(note) inner += br + `%E2%99%A1 Catatan : ${note}` + br;
 
-    // Bungkus dengan backtick tiga untuk monospace di WA
     const msg = "%60%60%60" + br + inner + "%60%60%60";
-
     window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, "_blank");
   });
 
