@@ -786,9 +786,9 @@
     const now   = new Date();
     const jam   = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
     const tgl   = now.toLocaleDateString("id-ID",  { day:"2-digit", month:"short", year:"numeric" });
-    const waktu = jam + " \u00b7 " + tgl;
-    const br    = "%0A";
-    const garis = "%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95%E2%80%95";
+    const waktu = jam + " · " + tgl;
+    const br    = "\n";
+    const garis = "――――――――――――――――――――";
 
     let subtotal = 0;
     const itemLines = chosen.map(c => {
@@ -806,8 +806,8 @@
     }
 
     let inner = "";
-    inner += `%E2%9C%A6 JASA ORDER BLUCKEYS %E2%9C%A6` + br;
-    inner += `.%E2%98%98%EF%B8%8E %DD%81%CB%96 E-Receipt .%E2%98%98%EF%B8%8E %DD%81%CB%96` + br;
+    inner += `✦ JASA ORDER BLUCKEYS ✦` + br;
+    inner += `.☘︎ ݁˖ E-Receipt .☘︎ ݁˖` + br;
     inner += garis + br;
     inner += br;
     inner += `Nama   : ${cust}` + br;
@@ -817,7 +817,7 @@
     if(method === "Delivery" && delivAddr) inner += `Kirim  : ${delivAddr}` + br;
     inner += br;
     inner += garis + br;
-    inner += `.%E2%98%98%EF%B8%8E %DD%81%CB%96 Order Listed .%E2%98%98%EF%B8%8E %DD%81%CB%96` + br;
+    inner += `.☘︎ ݁˖ Order Listed .☘︎ ݁˖` + br;
     inner += garis + br;
     inner += br;
     inner += itemLines;
@@ -826,9 +826,10 @@
     inner += garis + br;
     inner += `Total  :  ${rupiah(total)}` + br;
     inner += garis + br;
-    if(note) inner += br + `%E2%99%A1 Catatan : ${note}` + br;
+    if(note) inner += br + `♡ Catatan : ${note}` + br;
 
-    const msg = "%60%60%60" + br + inner + "%60%60%60";
+    const pesan = "```" + br + inner + "```";
+    const msg = encodeURIComponent(pesan);
     window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, "_blank");
   });
 
