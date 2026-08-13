@@ -543,10 +543,6 @@
           <textarea id="deliveryAddr" placeholder="cth. Jl. Kenangan No. 12, RT 03..."></textarea>
         </div>
         <p class="delivery-note" id="deliveryNote" style="display:none">Khusus Delivery: Minimal order Rp40.000 untuk dapet gratis ongkir Rp12.000 (Opsional)</p>
-        <div class="form-row">
-          <label for="note">Catatan (opsional)</label>
-          <textarea id="note" placeholder="less sugar, extra shot, dll"></textarea>
-        </div>
 
         <button class="order-btn" id="orderBtn" disabled>Pesan via WhatsApp</button>
       </div>
@@ -1191,7 +1187,6 @@
     const method    = document.getElementById("method").value;
     const storeAddr = document.getElementById("storeAddr").value.trim();
     const delivAddr = document.getElementById("deliveryAddr").value.trim();
-    const note      = document.getElementById("note").value.trim();
 
     const now   = new Date();
     const jam   = now.toLocaleTimeString("id-ID", { hour:"2-digit", minute:"2-digit" });
@@ -1237,7 +1232,6 @@
     inner += garis + br;
     inner += `Total  :  ${rupiah(total)}` + br;
     inner += garis + br;
-    if(note) inner += br + `♡ Catatan : ${note}` + br;
 
     const pesan = "```" + br + inner + "```";
     const msg = encodeURIComponent(pesan);
