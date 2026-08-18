@@ -1249,6 +1249,9 @@
     searchInput.focus();
   });
   document.getElementById("searchCloseBtn").addEventListener("click", closeSearch);
+  // Tutup keyboard HP lebih awal saat mulai tap di hasil pencarian,
+  // supaya tap ke item tidak "hilang" karena layout bergeser saat keyboard menutup
+  searchResults.addEventListener("touchstart", () => { searchInput.blur(); }, { passive: true });
   searchOverlay.addEventListener("click", e => { if(e.target === searchOverlay) closeSearch(); });
   document.addEventListener("keydown", e => { if(e.key === "Escape") closeSearch(); });
 
@@ -1314,9 +1317,12 @@
     searchResults.querySelectorAll(".search-item").forEach(row => {
       row.addEventListener("click", () => {
         const id = row.dataset.id;
+        searchInput.blur();
         closeSearch();
-        const el = document.querySelector(`.item[data-id="${id}"]`);
-        if(el) el.scrollIntoView({ behavior:"smooth", block:"center" });
+        setTimeout(() => {
+          const el = document.querySelector(`.item[data-id="${id}"]`);
+          if(el) el.scrollIntoView({ behavior:"smooth", block:"center" });
+        }, 300);
       });
     });
 
