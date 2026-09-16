@@ -570,6 +570,14 @@
       ]
     },
     {
+      id: "unexpectedtwist", title: "The Unexpected Twist", hasSize: true, items: [
+        { name:"Iced Crunchy Cereal Latte", price:26500, img:"iced-crunchy-cereal-latte.jpg" },
+        { name:"Hot Crunchy Cereal Latte", price:26500, img:"hot-crunchy-cereal-latte.jpg" },
+        { name:"Iced Salted Spanish Latte", price:23500, img:"iced-salted-spanish-latte.jpg" },
+        { name:"Hot Salted Spanish Latte", price:23500, img:"hot-salted-spanish-latte.jpg" },
+      ]
+    },
+    {
       id: "americano", title: "Americano Series", hasSize: true, items: [
         { name:"Iced Americano", price:19000, img:"iced-americano.jpg" },
         { name:"Hot Americano", price:19000, img:"hot-americano.jpg" },
@@ -705,6 +713,7 @@
   // ---- SEMUA KATEGORI SUDAH DIVERIFIKASI & FINAL ----
   // Jangan ubah aturan di bawah ini tanpa cek ulang langsung ke app Fore.
   const CATEGORY_RULES = {
+    unexpectedtwist: { ice:true, sweetness:true, espresso:2, dairy:true },
     americano:   { ice:true,  sweetness:true,  espresso:2, dairy:true  },
     junior:      { ice:false, sweetness:true,  espresso:0, dairy:true  },
     coffee:      { ice:true,  sweetness:true,  espresso:2, dairy:true  },
