@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
-<meta name="theme-color" content="#f3ead9">
+<meta name="theme-color" content="#ffffff">
 <title>Bluckeys JasDor — Kopi Kenangan</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -14,7 +14,7 @@
 <style>
   :root{
     color-scheme: light only;
-    --bg:#f3ead9;
+    --bg:#ffffff;
     --paper:#fffdf8;
     --line:#e2d7c2;
     --ink:#2c2115;
@@ -509,7 +509,7 @@
         </div>
         <hr class="rule">
         <div class="receipt-option-row" id="tasRow">
-          <span class="receipt-option-label">Tas belanja <small>(+Rp3.000)</small><br><small id="tasNote" style="opacity:.65;font-size:10px"></small></span>
+          <span class="receipt-option-label">Tas belanja <small>(+Rp1.000 / 3 item)</small><br><small id="tasNote" style="opacity:.65;font-size:10px"></small></span>
           <div class="toggle-wrap" id="tasToggleWrap">
             <button class="toggle-btn active" id="kantongTidak">Tidak</button>
             <button class="toggle-btn" id="kantongYa">Ya</button>
@@ -564,8 +564,13 @@
 
 <script>
   const WA_NUMBER = "6289522708062";
-  const KANTONG_PRICE  = 3000;
+  const KANTONG_PRICE     = 1000;
+  const KANTONG_PER_QTY   = 3; // 1 kantong menampung 3 item, lebih dari itu otomatis nambah kantong
   const PREM_OUTLET_FEE = 3000;
+
+  function kantongQtyFor(itemCount){
+    return itemCount > 0 ? Math.ceil(itemCount / KANTONG_PER_QTY) : 0;
+  }
 
   const DRINK_CATS = new Set(["coffee","blueberry","kenangan-frappe","tea-blend","chocolate-sweets","thai-tea","little-kenangan","oatside-series"]);
 
@@ -1571,9 +1576,10 @@
     } else {
       linesEl.innerHTML = lines.join("");
       if(kantong){
+        const kQty = kantongQtyFor(count);
         linesEl.innerHTML += `<div class="line">
-          <span class="l-name">Tas belanja</span>
-          <span class="l-amt">${rupiah(KANTONG_PRICE)}</span>
+          <span class="l-name">Tas belanja <small>\u00d7${kQty}</small></span>
+          <span class="l-amt">${rupiah(kQty * KANTONG_PRICE)}</span>
         </div>`;
       }
       if(isPremOutlet){
@@ -1584,7 +1590,8 @@
       }
     }
 
-    const total = subtotal + (kantong && lines.length > 0 ? KANTONG_PRICE : 0) + (isPremOutlet && lines.length > 0 ? PREM_OUTLET_FEE : 0);
+    const kantongTotal = (kantong && lines.length > 0) ? kantongQtyFor(count) * KANTONG_PRICE : 0;
+    const total = subtotal + kantongTotal + (isPremOutlet && lines.length > 0 ? PREM_OUTLET_FEE : 0);
     totalEl.textContent = rupiah(total);
     countEl.textContent = count + " item \u00b7 Sudah Include Diskon 50% + Fee";
     orderBtn.disabled = count === 0;
@@ -1616,10 +1623,10 @@
     const br    = "\n";
     const garis = "――――――――――――――――――――";
 
-    let subtotal = 0;
+    let subtotal = 0, totalQty = 0;
     const itemLines = cartLines.map(l => {
       const sub = l.unitPrice * l.qty;
-      subtotal += sub;
+      subtotal += sub; totalQty += l.qty;
       const label = czLineLabel(l);
       const sl = label ? ` (${label})` : "";
       return `${l.name}${sl}  x${l.qty}  ${rupiah(sub)}`;
@@ -1628,8 +1635,10 @@
     let total = subtotal;
     let tasLine = "";
     if(kantong){
-      total += KANTONG_PRICE;
-      tasLine = br + `Tas belanja  x1  ${rupiah(KANTONG_PRICE)}`;
+      const kQty = kantongQtyFor(totalQty);
+      const kTotal = kQty * KANTONG_PRICE;
+      total += kTotal;
+      tasLine = br + `Tas belanja  x${kQty}  ${rupiah(kTotal)}`;
     }
     let premLine = "";
     if(pickedOutlet && pickedOutlet.p && storeAddrEl.value.trim() === "Kopi Kenangan – " + pickedOutlet.n){
